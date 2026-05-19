@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>KOVA OS - Content Calendar</title>
+    <title>KOVA OS - Content & Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -64,36 +64,13 @@
                         "surface-variant": "#e6e2da",
                         "brand-accent": "#7ed321"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "margin-internal": "10%",
-                        "accent-width-centered": "25%",
-                        "gutter": "24px",
-                        "technical-line-weight": "2px",
-                        "accent-width-asymmetric": "35%"
-                    },
                     "fontFamily": {
                         "body-lg": ["Inter"],
                         "metadata": ["Inter"],
                         "body-md": ["Inter"],
                         "headline-lg": ["Inter"],
                         "headline-xl": ["Inter"],
-                        "label-technical": ["JetBrains Mono"],
-                        "headline-lg-mobile": ["Inter"]
-                    },
-                    "fontSize": {
-                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
-                        "metadata": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
-                        "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
-                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                        "label-technical": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "400"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                        "label-technical": ["JetBrains Mono"]
                     }
                 },
             },
@@ -106,21 +83,30 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
         input:focus, select:focus { outline: none; border-bottom-color: #7ed321 !important; }
+        
+        /* Nav active state */
+        .nav-item { border-left: 2px solid transparent; cursor: pointer; }
+        .nav-active { border-left: 2px solid #000000; color: #000000 !important; font-weight: 700; }
+        .nav-inactive { color: #444748; font-weight: 400; }
     </style>
 </head>
 <body class="font-body-md text-on-surface">
 
 <aside class="h-full w-64 fixed left-0 top-0 border-r technical-line-weight border-outline-variant bg-surface flex flex-col py-gutter px-6 z-40">
-    <div class="mb-12">
+    <div class="mb-12 mt-6">
         <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-primary">KOVA OS</h1>
         <p class="font-label-technical text-label-technical text-on-surface-variant uppercase mt-1">Studio Edition</p>
     </div>
     <nav class="flex-1 space-y-4">
-        <a class="flex items-center gap-3 text-primary font-bold border-l-2 border-primary pl-2" href="#">
+        <a id="nav-library" onclick="switchMainView('library')" class="nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200">
             <span class="material-symbols-outlined">calendar_today</span>
             <span class="font-body-md">Content OS</span>
         </a>
-        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
+        <a id="nav-analytics" onclick="switchMainView('analytics')" class="nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200">
+            <span class="material-symbols-outlined">monitoring</span>
+            <span class="font-body-md">Analytics</span>
+        </a>
+        <a class="nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200" href="#">
             <span class="material-symbols-outlined">folder_copy</span>
             <span class="font-body-md">Database</span>
         </a>
@@ -129,15 +115,19 @@
 
 <header class="fixed top-0 right-0 w-[calc(100%-16rem)] border-b technical-line-weight border-outline-variant bg-surface flex justify-between items-center h-16 px-gutter ml-64 z-30">
     <div class="flex items-center flex-1">
-        <div class="relative w-full max-w-md">
+        <div class="relative w-full max-w-md" id="search-container">
             <span class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">search</span>
             <input id="search-input" oninput="filterData()" class="w-full bg-transparent border-none pl-8 font-body-md text-on-surface focus:ring-0" placeholder="Search resources..." type="text"/>
         </div>
     </div>
+    <div class="flex items-center gap-6">
+        <div id="sync-status" class="font-label-technical text-xs text-on-surface-variant animate-pulse hidden">SYNCING...</div>
+    </div>
 </header>
 
 <main class="ml-64 pt-16 min-h-screen">
-    <div class="px-margin-internal py-12">
+    
+    <div id="view-library" class="px-margin-internal py-12 block">
         <section class="mb-12">
             <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
@@ -172,7 +162,32 @@
         </section>
 
         <div id="kova-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <p class="font-label-technical text-primary text-xl col-span-full animate-pulse">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>
+        </div>
+    </div>
+
+    <div id="view-analytics" class="px-margin-internal py-12 hidden">
+        <section class="mb-12">
+            <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Analytics</h2>
+            <div class="technical-line asymmetric-divider mb-8"></div>
+            <p class="font-label-technical text-on-surface-variant uppercase mb-8">System Metrics Datahub</p>
+
+            <div class="mb-12">
+                <h3 class="font-headline-lg font-semibold text-primary mb-6">Global Metrics</h3>
+                <div id="global-kpis" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    </div>
             </div>
+
+            <div>
+                <h3 class="font-headline-lg font-semibold text-primary mb-6">Platform Breakdown</h3>
+                <div id="platform-kpis" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    </div>
+            </div>
+            
+            <div id="analytics-error" class="hidden font-label-technical text-error mt-4">
+                No se encontraron datos en la pestaña "METRICA2".
+            </div>
+        </section>
     </div>
 </main>
 
@@ -195,40 +210,166 @@
 </div>
 
 <script>
+    // 1. Configuración Principal
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
-    let currentView = 'grid'; 
+    let metricaData = [];
+    let currentViewFormat = 'grid'; 
 
+    // 2. Navegación Principal (Library vs Analytics)
+    function switchMainView(viewId) {
+        // Toggle Nav Styles
+        document.getElementById('nav-library').className = viewId === 'library' ? 'nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200' : 'nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200';
+        document.getElementById('nav-analytics').className = viewId === 'analytics' ? 'nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200' : 'nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200';
+        
+        // Toggle Visibility
+        document.getElementById('view-library').style.display = viewId === 'library' ? 'block' : 'none';
+        document.getElementById('view-analytics').style.display = viewId === 'analytics' ? 'block' : 'none';
+        
+        // Hide Search bar if in analytics
+        document.getElementById('search-container').style.visibility = viewId === 'library' ? 'visible' : 'hidden';
+    }
+
+    // 3. Inicialización
     async function initKova() {
-        const grid = document.getElementById('kova-grid');
-        grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full animate-pulse">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
+        document.getElementById('sync-status').classList.remove('hidden');
 
         try {
             const response = await fetch(API_URL);
             const data = await response.json();
             
+            // Fusión de Base de Datos para el Calendario
             const calendarRows = data.CALENDAR || [];
             const databaseRows = data.DATABASE || [];
             kovaData = [...calendarRows, ...databaseRows];
             
+            // Extracción de Analíticas
+            metricaData = data.METRICA2 || data.Metrica2 || data.METRICA_2 || [];
+            
             filterData();
+            renderAnalytics();
+            
+            document.getElementById('sync-status').innerText = 'SYNC COMPLETE';
+            setTimeout(() => document.getElementById('sync-status').classList.add('hidden'), 2000);
+            
         } catch (error) {
-            grid.innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS.</p>';
+            document.getElementById('kova-grid').innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS.</p>';
             console.error(error);
         }
     }
 
-    function setView(view) {
-        currentView = view;
-        
-        document.getElementById('btn-grid').className = view === 'grid' 
-            ? 'p-1.5 bg-primary text-on-primary transition-colors' 
-            : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
-            
-        document.getElementById('btn-list').className = view === 'list' 
-            ? 'p-1.5 bg-primary text-on-primary transition-colors' 
-            : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
+    // -------------------------------------------------------------------------
+    // MOTOR DE ANALÍTICAS (DASHBOARD)
+    // -------------------------------------------------------------------------
+    function renderAnalytics() {
+        const globalContainer = document.getElementById('global-kpis');
+        const platformContainer = document.getElementById('platform-kpis');
+        const errorMsg = document.getElementById('analytics-error');
 
+        globalContainer.innerHTML = '';
+        platformContainer.innerHTML = '';
+
+        if (metricaData.length === 0) {
+            errorMsg.classList.remove('hidden');
+            return;
+        } else {
+            errorMsg.classList.add('hidden');
+        }
+
+        let globalTotals = {};
+        let platformTotals = {};
+
+        // Procesamiento Inteligente de Datos
+        metricaData.forEach(row => {
+            let pName = "General / Sin Categorizar";
+            
+            // Intentamos detectar la columna de plataforma
+            for (let key in row) {
+                if (typeof row[key] === 'string') {
+                    const valLow = row[key].toLowerCase();
+                    if (valLow.includes('insta') || valLow.includes('youtube') || valLow.includes('tiktok') || valLow.includes('spotify')) {
+                        pName = row[key];
+                        break;
+                    }
+                }
+            }
+
+            if (!platformTotals[pName]) platformTotals[pName] = {};
+
+            // Detectar y sumar cualquier columna que sea un número
+            for (let key in row) {
+                let numValue = parseFloat(row[key]);
+                if (!isNaN(numValue) && row[key] !== "") { 
+                    // No sumamos cosas que parezcan IDs o Años (números sueltos exactos como 2026)
+                    if(numValue > 2100 || numValue < 2000 || numValue !== parseInt(row[key])) { 
+                        globalTotals[key] = (globalTotals[key] || 0) + numValue;
+                        platformTotals[pName][key] = (platformTotals[pName][key] || 0) + numValue;
+                    }
+                }
+            }
+        });
+
+        // Función para formatear números largos (Ej. 1500 -> 1.5K)
+        const formatNum = (num) => {
+            if(num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if(num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        };
+
+        // Pintar KPIs Globales
+        for (let metricName in globalTotals) {
+            const val = formatNum(globalTotals[metricName]);
+            const card = document.createElement('div');
+            card.className = "bg-[#ede9e1] border-t-2 border-brand-accent p-6 flex flex-col";
+            card.innerHTML = `
+                <span class="font-label-technical text-on-surface-variant uppercase mb-2 truncate">${metricName}</span>
+                <span class="font-headline-xl text-primary font-bold">${val}</span>
+            `;
+            globalContainer.appendChild(card);
+        }
+
+        // Pintar Desglose por Plataformas
+        for (let plat in platformTotals) {
+            const card = document.createElement('div');
+            card.className = "bg-[#ede9e1] border border-outline-variant p-6 rounded-sm";
+            
+            // Asignar Icono según el nombre
+            let iconStr = 'public';
+            if(plat.toLowerCase().includes('insta')) iconStr = 'photo_camera';
+            if(plat.toLowerCase().includes('tube')) iconStr = 'play_arrow';
+            if(plat.toLowerCase().includes('tik')) iconStr = 'music_note';
+
+            let html = `
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-3xl text-primary">${iconStr}</span>
+                    <h4 class="font-headline-lg font-bold text-primary uppercase">${plat}</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+            `;
+
+            for (let metric in platformTotals[plat]) {
+                const pVal = formatNum(platformTotals[plat][metric]);
+                html += `
+                    <div>
+                        <p class="font-label-technical text-on-surface-variant uppercase">${metric}</p>
+                        <p class="font-body-lg font-bold text-primary">${pVal}</p>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+            card.innerHTML = html;
+            platformContainer.appendChild(card);
+        }
+    }
+
+
+    // -------------------------------------------------------------------------
+    // MOTOR DE CALENDARIO (LO QUE YA TENÍAS)
+    // -------------------------------------------------------------------------
+    function setView(view) {
+        currentViewFormat = view;
+        document.getElementById('btn-grid').className = view === 'grid' ? 'p-1.5 bg-primary text-on-primary transition-colors' : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
+        document.getElementById('btn-list').className = view === 'list' ? 'p-1.5 bg-primary text-on-primary transition-colors' : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
         filterData(); 
     }
 
@@ -269,14 +410,14 @@
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '';
 
-        if (currentView === 'grid') {
+        if (currentViewFormat === 'grid') {
             grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8";
         } else {
             grid.className = "flex flex-col gap-3"; 
         }
 
         if (data.length === 0) {
-            grid.innerHTML = '<p class="font-label-technical text-on-surface-variant text-md col-span-full">No se encontraron contenidos con los filtros activos.</p>';
+            grid.innerHTML = '<p class="font-label-technical text-on-surface-variant text-md col-span-full">No se encontraron contenidos.</p>';
             return;
         }
 
@@ -305,7 +446,7 @@
             const card = document.createElement('div');
             card.onclick = () => abrirGuion(globalIndex); 
 
-            if (currentView === 'grid') {
+            if (currentViewFormat === 'grid') {
                 card.className = "group bg-[#ede9e1] border-t-2 border-brand-accent p-6 flex flex-col h-full transition-all hover:translate-y-[-4px] cursor-pointer";
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-6">
@@ -344,28 +485,20 @@
 
     function abrirGuion(index) {
         const item = kovaData[index];
-        
         const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
         const tipo = item.Tipo_contenido || item.Tipo_Contenido || 'Contenido';
         const fechaRaw = item.Fecha_generacion || item.Fecha;
         
         let guionTexto = "";
-        
-        // 1. Intentar leer guion de la tarjeta seleccionada directamente
         const keys = Object.keys(item);
-        const keyExacta = keys.find(k => {
-            const cleanKey = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return cleanKey === 'guion';
-        });
+        const keyExacta = keys.find(k => k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'guion');
         
         if (keyExacta && item[keyExacta] && item[keyExacta].toString().trim() !== '') {
             guionTexto = item[keyExacta];
         }
 
-        // 2. CRUCE DE PESTAÑAS: Si viene de CALENDAR y el guion está vacío, buscar la fila homóloga en DATABASE
         if (!guionTexto || guionTexto.trim() === "") {
             const tituloLimpio = titulo.trim().toLowerCase();
-            
             const itemRelacionado = kovaData.find(otherItem => {
                 const otherTitulo = (otherItem.Concepto || otherItem.Contenido || otherItem.Titulo || "").trim().toLowerCase();
                 if (otherTitulo === tituloLimpio && otherItem !== item) {
@@ -380,31 +513,3 @@
                 const otherKeys = Object.keys(itemRelacionado);
                 const otherKeyExacta = otherKeys.find(k => k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'guion');
                 guionTexto = itemRelacionado[otherKeyExacta];
-            } else {
-                guionTexto = "No hay guion o notas registradas en ninguna pestaña para este contenido.";
-            }
-        }
-
-        // 3. Renderizar Panel Lateral
-        document.getElementById('drawer-title').innerText = titulo;
-        document.getElementById('drawer-tag').innerText = tipo;
-        
-        let fechaTexto = 'Fecha no programada';
-        if(fechaRaw) {
-            const f = new Date(fechaRaw);
-            if(!isNaN(f)) fechaTexto = f.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        document.getElementById('drawer-date').innerText = fechaTexto;
-        document.getElementById('drawer-content').value = guionTexto;
-
-        document.getElementById('script-drawer').classList.remove('translate-x-full');
-    }
-
-    function cerrarGuion() {
-        document.getElementById('script-drawer').classList.add('translate-x-full');
-    }
-
-    initKova();
-</script>
-</body>
-</html>
