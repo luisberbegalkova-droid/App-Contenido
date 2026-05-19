@@ -195,12 +195,10 @@
 </div>
 
 <script>
-    // 1. Configuración Principal
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
     let currentView = 'grid'; 
 
-    // 2. Inicialización
     async function initKova() {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full animate-pulse">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
@@ -220,7 +218,6 @@
         }
     }
 
-    // 3. Controladores de Vista (Grid/List)
     function setView(view) {
         currentView = view;
         
@@ -235,7 +232,6 @@
         filterData(); 
     }
 
-    // 4. Motor de Búsqueda y Filtros
     function filterData() {
         const statusFilter = document.getElementById('status-filter').value;
         const typeFilter = document.getElementById('type-filter').value;
@@ -269,7 +265,6 @@
         renderGrid(result);
     }
 
-    // 5. Renderizado Dinámico (Tarjetas)
     function renderGrid(data) {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '';
@@ -298,7 +293,7 @@
             
             let icon = 'article';
             if(tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video')) icon = 'movie';
-            else if(tipo.toLowerCase().includes('stor') || tipo.toLowerCase().includes('photo')) icon = 'image';
+            else if(tipo.toLowerCase().includes('stor') || tipo.toLowerCase().includes('photo') || tipo.toLowerCase().includes('image')) icon = 'image';
 
             let fechaTexto = 'TBD';
             if(fechaRaw) {
@@ -347,7 +342,6 @@
         });
     }
 
-    // 6. Apertura del Panel (Búsqueda Inteligente de Guion)
     function abrirGuion(index) {
         const item = kovaData[index];
         
@@ -355,8 +349,9 @@
         const tipo = item.Tipo_contenido || item.Tipo_Contenido || 'Contenido';
         const fechaRaw = item.Fecha_generacion || item.Fecha;
         
-        // Búsqueda inteligente
-        let guionTexto = "No hay guion o notas registradas en el documento para este contenido.";
+        let guionTexto = "";
+        
+        // 1. Intentar leer guion de la tarjeta seleccionada directamente
         const keys = Object.keys(item);
         const keyExacta = keys.find(k => {
             const cleanKey = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -367,6 +362,30 @@
             guionTexto = item[keyExacta];
         }
 
+        // 2. CRUCE DE PESTAÑAS: Si viene de CALENDAR y el guion está vacío, buscar la fila homóloga en DATABASE
+        if (!guionTexto || guionTexto.trim() === "") {
+            const tituloLimpio = titulo.trim().toLowerCase();
+            
+            const itemRelacionado = kovaData.find(otherItem => {
+                const otherTitulo = (otherItem.Concepto || otherItem.Contenido || otherItem.Titulo || "").trim().toLowerCase();
+                if (otherTitulo === tituloLimpio && otherItem !== item) {
+                    const otherKeys = Object.keys(otherItem);
+                    const otherKeyExacta = otherKeys.find(k => k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'guion');
+                    return otherKeyExacta && otherItem[otherKeyExacta] && otherItem[otherKeyExacta].toString().trim() !== '';
+                }
+                return false;
+            });
+
+            if (itemRelacionado) {
+                const otherKeys = Object.keys(itemRelacionado);
+                const otherKeyExacta = otherKeys.find(k => k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'guion');
+                guionTexto = itemRelacionado[otherKeyExacta];
+            } else {
+                guionTexto = "No hay guion o notas registradas en ninguna pestaña para este contenido.";
+            }
+        }
+
+        // 3. Renderizar Panel Lateral
         document.getElementById('drawer-title').innerText = titulo;
         document.getElementById('drawer-tag').innerText = tipo;
         
@@ -385,7 +404,6 @@
         document.getElementById('script-drawer').classList.add('translate-x-full');
     }
 
-    // Arrancar la app
     initKova();
 </script>
 </body>
