@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>KOVA OS - Content Calendar</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -115,13 +116,13 @@
         <p class="font-label-technical text-label-technical text-on-surface-variant uppercase mt-1">Studio Edition</p>
     </div>
     <nav class="flex-1 space-y-4">
-        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
-            <span class="material-symbols-outlined">calendar_today</span>
-            <span class="font-body-md">Calendar</span>
-        </a>
         <a class="flex items-center gap-3 text-primary font-bold border-l-2 border-primary pl-2" href="#">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="font-body-md">Content OS</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
             <span class="material-symbols-outlined">folder_copy</span>
-            <span class="font-body-md">Content Library</span>
+            <span class="font-body-md">Database</span>
         </a>
     </nav>
 </aside>
@@ -194,10 +195,12 @@
 </div>
 
 <script>
+    // 1. Configuración Principal
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
-    let currentView = 'grid'; // Vista por defecto
+    let currentView = 'grid'; 
 
+    // 2. Inicialización
     async function initKova() {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full animate-pulse">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
@@ -206,7 +209,6 @@
             const response = await fetch(API_URL);
             const data = await response.json();
             
-            // FUSIÓN DE PESTAÑAS: Unimos los datos de CALENDAR y DATABASE
             const calendarRows = data.CALENDAR || [];
             const databaseRows = data.DATABASE || [];
             kovaData = [...calendarRows, ...databaseRows];
@@ -218,11 +220,10 @@
         }
     }
 
-    // Cambiar entre vista Grid y List
+    // 3. Controladores de Vista (Grid/List)
     function setView(view) {
         currentView = view;
         
-        // Estilos de los botones
         document.getElementById('btn-grid').className = view === 'grid' 
             ? 'p-1.5 bg-primary text-on-primary transition-colors' 
             : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
@@ -231,9 +232,10 @@
             ? 'p-1.5 bg-primary text-on-primary transition-colors' 
             : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
 
-        filterData(); // Redibujar con el nuevo formato
+        filterData(); 
     }
 
+    // 4. Motor de Búsqueda y Filtros
     function filterData() {
         const statusFilter = document.getElementById('status-filter').value;
         const typeFilter = document.getElementById('type-filter').value;
@@ -267,15 +269,15 @@
         renderGrid(result);
     }
 
+    // 5. Renderizado Dinámico (Tarjetas)
     function renderGrid(data) {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '';
 
-        // Cambiar clases del contenedor según la vista
         if (currentView === 'grid') {
             grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8";
         } else {
-            grid.className = "flex flex-col gap-3"; // Formato listado vertical ancho
+            grid.className = "flex flex-col gap-3"; 
         }
 
         if (data.length === 0) {
@@ -284,13 +286,12 @@
         }
 
         data.forEach((item) => {
-            const estadoActual = item.Estado || 'Idea'; // La pestaña DATABASE no tiene 'Estado', asumimos Idea.
+            const estadoActual = item.Estado || 'Idea'; 
             let bgEstado = '#d1d5db'; 
             let colorEstado = '#444748';
             if (estadoActual === 'Ready') { bgEstado = 'rgba(135,220,44,0.3)'; colorEstado = '#2a5000'; }
             if (estadoActual === 'Publicado' || estadoActual === 'Published') { bgEstado = 'rgba(147,197,253,0.3)'; colorEstado = '#1e3a8a'; }
 
-            // Lectura adaptada para los nombres de columnas de DATABASE
             const tipo = item.Tipo_contenido || item.Tipo_Contenido || 'Contenido';
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
@@ -310,7 +311,6 @@
             card.onclick = () => abrirGuion(globalIndex); 
 
             if (currentView === 'grid') {
-                // DISEÑO CUADRÍCULA (GRID)
                 card.className = "group bg-[#ede9e1] border-t-2 border-brand-accent p-6 flex flex-col h-full transition-all hover:translate-y-[-4px] cursor-pointer";
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-6">
@@ -327,7 +327,6 @@
                     </div>
                 `;
             } else {
-                // DISEÑO LISTADO ANCHO (LIST)
                 card.className = "group bg-[#ede9e1] border-l-4 border-brand-accent p-4 flex flex-row items-center justify-between w-full transition-all hover:translate-x-1 cursor-pointer gap-6";
                 card.innerHTML = `
                     <div class="flex items-center gap-4 w-48">
@@ -348,14 +347,25 @@
         });
     }
 
+    // 6. Apertura del Panel (Búsqueda Inteligente de Guion)
     function abrirGuion(index) {
         const item = kovaData[index];
         
-        // Adaptación a las columnas de la captura
         const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
         const tipo = item.Tipo_contenido || item.Tipo_Contenido || 'Contenido';
         const fechaRaw = item.Fecha_generacion || item.Fecha;
-        const guionTexto = item.Guion || item.Script || item.Texto || "No hay guion o notas registradas en el documento para este contenido.";
+        
+        // Búsqueda inteligente
+        let guionTexto = "No hay guion o notas registradas en el documento para este contenido.";
+        const keys = Object.keys(item);
+        const keyExacta = keys.find(k => {
+            const cleanKey = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return cleanKey === 'guion';
+        });
+        
+        if (keyExacta && item[keyExacta] && item[keyExacta].toString().trim() !== '') {
+            guionTexto = item[keyExacta];
+        }
 
         document.getElementById('drawer-title').innerText = titulo;
         document.getElementById('drawer-tag').innerText = tipo;
@@ -375,6 +385,7 @@
         document.getElementById('script-drawer').classList.add('translate-x-full');
     }
 
+    // Arrancar la app
     initKova();
 </script>
 </body>
