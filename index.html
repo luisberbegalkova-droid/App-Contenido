@@ -127,7 +127,6 @@
 </head>
 <body class="font-body-md text-on-surface">
 
-<!-- SideNavBar Shell -->
 <aside class="h-full w-64 fixed left-0 top-0 border-r technical-line-weight border-outline-variant bg-surface flex flex-col py-gutter px-6 z-40">
     <div class="mb-12">
         <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-primary">KOVA OS</h1>
@@ -158,12 +157,11 @@
     </div>
 </aside>
 
-<!-- TopNavBar Shell -->
 <header class="fixed top-0 right-0 w-[calc(100%-16rem)] border-b technical-line-weight border-outline-variant bg-surface flex justify-between items-center h-16 px-gutter ml-64 z-30">
     <div class="flex items-center flex-1">
         <div class="relative w-full max-w-md">
             <span class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">search</span>
-            <input class="w-full bg-transparent border-none pl-8 font-body-md text-on-surface focus:ring-0" placeholder="Search resources..." type="text"/>
+            <input id="search-input" oninput="filterData()" class="w-full bg-transparent border-none pl-8 font-body-md text-on-surface focus:ring-0" placeholder="Search resources..." type="text"/>
         </div>
     </div>
     <div class="flex items-center gap-6">
@@ -178,32 +176,29 @@
     </div>
 </header>
 
-<!-- Main Content Canvas -->
 <main class="ml-64 pt-16 min-h-screen">
     <div class="px-margin-internal py-12">
-        <!-- Header Section (Mode A Asymmetric) -->
         <section class="mb-12">
             <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
             
-            <!-- Filters Bar -->
             <div class="flex flex-wrap items-end gap-8 pb-4">
                 <div class="flex flex-col gap-2">
                     <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Type</label>
-                    <select class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
-                        <option>All Types</option>
-                        <option>Video Content</option>
-                        <option>Static Imagery</option>
-                        <option>Editorial Copy</option>
+                    <select id="type-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                        <option value="All">All Types</option>
+                        <option value="Reel">Reel / Video</option>
+                        <option value="Stories">Stories / Images</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-2">
                     <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Status</label>
-                    <select class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
-                        <option>All Statuses</option>
-                        <option>Idea</option>
-                        <option>Ready</option>
-                        <option>Published</option>
+                    <select id="status-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                        <option value="Unpublished">No Publicados (Base)</option>
+                        <option value="All">Todos los Estados</option>
+                        <option value="Idea">Idea</option>
+                        <option value="Ready">Ready</option>
+                        <option value="Published">Published / Publicado</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -223,12 +218,9 @@
             </div>
         </section>
 
-        <!-- Grid Dinámico KOVA -->
         <div id="kova-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <!-- Las tarjetas se inyectarán aquí mediante JavaScript -->
-        </div>
+            </div>
 
-        <!-- Footer Metadata (Technical Block) -->
         <footer class="mt-20 pt-12 border-t border-outline-variant flex justify-between items-center">
             <div class="flex flex-col gap-1">
                 <p class="font-label-technical text-label-technical text-on-surface-variant">SYSTEM STATUS: NOMINAL</p>
@@ -243,9 +235,7 @@
     </div>
 </main>
 
-<!-- Drawer / Panel Lateral del Guion -->
 <div id="script-drawer" class="fixed right-0 top-0 h-full w-[30rem] bg-surface border-l technical-line-weight border-brand-accent z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
-    <!-- Cabecera del Panel -->
     <div class="p-8 border-b border-outline-variant flex justify-between items-start bg-surface-container-low">
         <div>
             <span id="drawer-tag" class="font-label-technical px-2 py-0.5 bg-brand-accent/20 text-on-tertiary-fixed-variant uppercase mb-3 inline-block">FORMATO</span>
@@ -257,21 +247,18 @@
         </button>
     </div>
     
-    <!-- Cuerpo del Panel (El Guion) -->
     <div class="p-8 flex-1 overflow-y-auto no-scrollbar bg-surface">
         <h3 class="font-label-technical text-on-surface-variant uppercase mb-4 tracking-widest">Script / Director's Notes</h3>
         <textarea id="drawer-content" class="w-full h-full bg-surface-container-highest text-primary font-body-md p-6 border border-outline-variant focus:border-brand-accent resize-none rounded-sm outline-none" readonly>Cargando guion...</textarea>
     </div>
 </div>
 
-<!-- Floating Technical Info (Peripheral) -->
 <div class="fixed bottom-6 left-72 z-50 pointer-events-none">
     <div class="bg-primary text-on-primary px-3 py-1 font-label-technical text-[10px] tracking-widest uppercase">
         KOVA_CS_MONITOR: ACTIVE
     </div>
 </div>
 
-<!-- Motor JavaScript (Conexión API) -->
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
@@ -279,53 +266,96 @@
     // 1. Iniciar la conexión al cargar la página
     async function initKova() {
         const grid = document.getElementById('kova-grid');
-        grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
+        grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full animate-pulse">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
 
         try {
             const response = await fetch(API_URL);
             const data = await response.json();
-            kovaData = data.CALENDAR || []; // Extrae la pestaña CALENDAR (ajusta si se llama distinto)
-            renderGrid(kovaData);
+            kovaData = data.CALENDAR || []; 
+            filterData(); // Ejecuta los filtros (aplica el filtro base "Unpublished")
         } catch (error) {
             grid.innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS.</p>';
             console.error(error);
         }
     }
 
-    // 2. Dibujar las tarjetas
+    // 2. Procesar Filtros Dinámicos (Estado base, selectores y buscador)
+    function filterData() {
+        const statusFilter = document.getElementById('status-filter').value;
+        const typeFilter = document.getElementById('type-filter').value;
+        const searchQuery = document.getElementById('search-input').value.toLowerCase();
+
+        let result = kovaData;
+
+        // FILTRO DE ESTADO BASE (Por defecto oculta los ya publicados)
+        if (statusFilter === 'Unpublished') {
+            result = result.filter(item => {
+                const est = (item.Estado || '').toLowerCase();
+                return est !== 'publicado' && est !== 'published';
+            });
+        } else if (statusFilter !== 'All') {
+            result = result.filter(item => (item.Estado || '').toLowerCase() === statusFilter.toLowerCase());
+        }
+
+        // FILTRO POR TIPO DE CONTENIDO
+        if (typeFilter !== 'All') {
+            result = result.filter(item => {
+                const tipo = (item.Tipo_Contenido || '').toLowerCase();
+                return tipo.includes(typeFilter.toLowerCase());
+            });
+        }
+
+        // FILTRO POR TEXTO (BUSCADOR SUPERIOR)
+        if (searchQuery) {
+            result = result.filter(item => {
+                const contenido = (item.Contenido || item.Titulo || '').toLowerCase();
+                return contenido.includes(searchQuery);
+            });
+        }
+
+        renderGrid(result);
+    }
+
+    // 3. Dibujar las tarjetas resultantes en el Grid
     function renderGrid(data) {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '';
 
-        data.forEach((item, index) => {
-            // Lógica visual: colores según el estado
+        if (data.length === 0) {
+            grid.innerHTML = '<p class="font-label-technical text-on-surface-variant text-md col-span-full">No se encontraron contenidos con los filtros activos.</p>';
+            return;
+        }
+
+        data.forEach((item) => {
             let bgEstado = '#d1d5db'; 
             let colorEstado = '#444748';
-            if (item.Estado === 'Ready') { bgEstado = 'rgba(135,220,44,0.3)'; colorEstado = '#2a5000'; }
-            if (item.Estado === 'Publicado' || item.Estado === 'Published') { bgEstado = 'rgba(147,197,253,0.3)'; colorEstado = '#1e3a8a'; }
+            const estadoActual = item.Estado || 'Idea';
 
-            // Lógica visual: Icono según tipo de contenido
+            if (estadoActual === 'Ready') { bgEstado = 'rgba(135,220,44,0.3)'; colorEstado = '#2a5000'; }
+            if (estadoActual === 'Publicado' || estadoActual === 'Published') { bgEstado = 'rgba(147,197,253,0.3)'; colorEstado = '#1e3a8a'; }
+
             let icon = 'article';
             const tipo = (item.Tipo_Contenido || '').toLowerCase();
             if(tipo.includes('reel') || tipo.includes('video')) icon = 'movie';
-            else if(tipo.includes('stor') || tipo.includes('photo')) icon = 'image';
+            else if(tipo.includes('stor') || tipo.includes('photo') || tipo.includes('image')) icon = 'image';
 
-            // Formatear la fecha
             let fechaTexto = 'TBD';
             if(item.Fecha) {
                 const f = new Date(item.Fecha);
                 if(!isNaN(f)) fechaTexto = f.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
             }
 
-            // Construir la tarjeta
+            // Buscamos el índice real del elemento en el array global para pasárselo al Drawer
+            const globalIndex = kovaData.findIndex(x => x === item);
+
             const card = document.createElement('div');
             card.className = "group bg-[#ede9e1] border-t-2 border-brand-accent p-6 flex flex-col h-full transition-all hover:translate-y-[-4px] cursor-pointer";
-            card.onclick = () => abrirGuion(index); 
+            card.onclick = () => abrirGuion(globalIndex); 
 
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-6">
                     <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
-                    <span class="font-label-technical px-2 py-0.5 uppercase font-bold" style="background-color: ${bgEstado}; color: ${colorEstado}">${item.Estado || 'Idea'}</span>
+                    <span class="font-label-technical px-2 py-0.5 uppercase font-bold" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
                 </div>
                 <h3 class="font-body-lg font-bold text-primary mb-2 group-hover:underline">${item.Contenido || item.Titulo || 'Sin Título'}</h3>
                 <div class="mt-auto pt-6 flex justify-between items-end">
@@ -333,28 +363,27 @@
                         <p class="font-label-technical text-on-surface-variant uppercase">Programado</p>
                         <p class="font-body-md text-primary font-bold">${fechaTexto}</p>
                     </div>
-                    <p class="font-label-technical text-on-surface-variant uppercase">${item.Tipo_Contenido || 'Contenido'}</p>
+                    <p class="font-label-technical text-on-surface-variant uppercase text-xs">${item.Tipo_Contenido || 'Contenido'}</p>
                 </div>
             `;
             grid.appendChild(card);
         });
     }
 
-    // 3. Controladores del Panel del Guion
+    // 4. Controladores del Panel del Guion
     function abrirGuion(index) {
         const item = kovaData[index];
         
         document.getElementById('drawer-title').innerText = item.Contenido || item.Titulo || 'Sin Título';
         document.getElementById('drawer-tag').innerText = item.Tipo_Contenido || 'Contenido';
         
-        let fechaTexto = '';
+        let fechaTexto = 'Fecha no programada';
         if(item.Fecha) {
             const f = new Date(item.Fecha);
             if(!isNaN(f)) fechaTexto = f.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
         document.getElementById('drawer-date').innerText = fechaTexto;
         
-        // Ajusta 'Guion' si la columna en tu Google Sheet tiene otro nombre (ej. 'Script', 'Texto', 'Notas')
         const guionTexto = item.Guion || item.Script || item.Texto || "No hay guion o notas registradas en el documento para este contenido.";
         document.getElementById('drawer-content').value = guionTexto;
 
@@ -365,7 +394,7 @@
         document.getElementById('script-drawer').classList.add('translate-x-full');
     }
 
-    // Iniciar
+    // Arrancar el sistema al cargar
     initKova();
 </script>
 </body>
