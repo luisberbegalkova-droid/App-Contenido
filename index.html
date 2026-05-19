@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#5f5e5e",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-tertiary-fixed-variant": "#2a5000",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "secondary": "#5e5e5e",
+                        "on-surface": "#1c1c17",
+                        "technical-block": "#2a1f16",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#dddad2",
+                        "primary-fixed": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#31302b",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "tertiary-fixed-dim": "#87dc2c",
+                        "on-surface-variant": "#444748",
+                        "on-tertiary-fixed": "#0e2000",
+                        "surface-bright": "#fdf9f1",
+                        "surface": "#fdf9f1",
+                        "on-primary-container": "#858383",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#539400",
+                        "surface-container-high": "#ece8e0",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#0e2000",
+                        "outline-variant": "#c4c7c7",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#474646",
+                        "on-secondary-container": "#626363",
+                        "inverse-primary": "#c9c6c5",
+                        "background": "#fdf9f1",
+                        "surface-dark": "#241a12",
+                        "surface-container-highest": "#e6e2da",
+                        "on-background": "#1c1c17",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c9c6c5",
+                        "surface-container": "#f1ede5",
+                        "tertiary-fixed": "#a1fa49",
+                        "secondary-fixed": "#e3e2e2",
+                        "secondary-container": "#e0dfdf",
+                        "tertiary": "#000000",
+                        "on-secondary-fixed-variant": "#464747",
+                        "primary-container": "#1c1b1b",
+                        "inverse-on-surface": "#f4f0e8",
+                        "outline": "#747878",
+                        "surface-container-low": "#f7f3eb",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e6e2da",
+                        "brand-accent": "#7ed321"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-internal": "10%",
+                        "accent-width-centered": "25%",
+                        "gutter": "24px",
+                        "technical-line-weight": "2px",
+                        "accent-width-asymmetric": "35%"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "metadata": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-technical": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "metadata": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-technical": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdf9f1;
+            color: #1c1c17;
+            overflow-x: hidden;
+        }
+        .technical-line {
+            height: 2px;
+            background-color: #7ed321;
+        }
+        .asymmetric-divider {
+            width: 35%;
+            margin-left: 0;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-bottom-color: #7ed321 !important;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+<!-- SideNavBar Shell -->
+<aside class="h-full w-64 fixed left-0 top-0 border-r technical-line-weight border-outline-variant bg-surface flex flex-col py-gutter px-6 z-40">
+    <div class="mb-12">
+        <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-primary">KOVA OS</h1>
+        <p class="font-label-technical text-label-technical text-on-surface-variant uppercase mt-1">Studio Edition</p>
+    </div>
+    <nav class="flex-1 space-y-4">
+        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="font-body-md">Calendar</span>
+        </a>
+        <a class="flex items-center gap-3 text-primary font-bold border-l-2 border-primary pl-2" href="#">
+            <span class="material-symbols-outlined">folder_copy</span>
+            <span class="font-body-md">Content Library</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
+            <span class="material-symbols-outlined">analytics</span>
+            <span class="font-body-md">Analytics</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant font-normal pl-2 hover:text-primary transition-colors duration-200" href="#">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-body-md">Settings</span>
+        </a>
+    </nav>
+    <div class="mt-auto pt-6 border-t border-outline-variant">
+        <button class="w-full py-3 border border-primary text-primary font-body-md hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+            New Content
+        </button>
+    </div>
+</aside>
+
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] border-b technical-line-weight border-outline-variant bg-surface flex justify-between items-center h-16 px-gutter ml-64 z-30">
+    <div class="flex items-center flex-1">
+        <div class="relative w-full max-w-md">
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">search</span>
+            <input class="w-full bg-transparent border-none pl-8 font-body-md text-on-surface focus:ring-0" placeholder="Search resources..." type="text"/>
+        </div>
+    </div>
+    <div class="flex items-center gap-6">
+        <button class="relative hover:bg-surface-container-low p-2 transition-all active:scale-95">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-brand-accent rounded-full"></span>
+        </button>
+        <div class="flex items-center gap-3">
+            <span class="font-label-technical text-label-technical text-on-surface-variant">OPERATOR_01</span>
+            <span class="material-symbols-outlined text-3xl">account_circle</span>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen">
+    <div class="px-margin-internal py-12">
+        <!-- Header Section (Mode A Asymmetric) -->
+        <section class="mb-12">
+            <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
+            <div class="technical-line asymmetric-divider mb-8"></div>
+            
+            <!-- Filters Bar -->
+            <div class="flex flex-wrap items-end gap-8 pb-4">
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Type</label>
+                    <select class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                        <option>All Types</option>
+                        <option>Video Content</option>
+                        <option>Static Imagery</option>
+                        <option>Editorial Copy</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Status</label>
+                    <select class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                        <option>All Statuses</option>
+                        <option>Idea</option>
+                        <option>Ready</option>
+                        <option>Published</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Date Range</label>
+                    <div class="flex items-center border-b border-outline py-1">
+                        <input class="bg-transparent border-none p-0 font-body-md text-on-surface w-32 focus:ring-0" placeholder="Last 30 Days" type="text"/>
+                        <span class="material-symbols-outlined text-on-surface-variant text-sm">calendar_month</span>
+                    </div>
+                </div>
+                <div class="ml-auto flex items-center gap-4">
+                    <span class="font-label-technical text-label-technical text-on-surface-variant">VIEW: GRID</span>
+                    <div class="flex border border-outline-variant">
+                        <button class="p-1.5 bg-primary text-on-primary"><span class="material-symbols-outlined">grid_view</span></button>
+                        <button class="p-1.5 hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Dinámico KOVA -->
+        <div id="kova-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Las tarjetas se inyectarán aquí mediante JavaScript -->
+        </div>
+
+        <!-- Footer Metadata (Technical Block) -->
+        <footer class="mt-20 pt-12 border-t border-outline-variant flex justify-between items-center">
+            <div class="flex flex-col gap-1">
+                <p class="font-label-technical text-label-technical text-on-surface-variant">SYSTEM STATUS: NOMINAL</p>
+                <p class="font-label-technical text-label-technical text-on-surface-variant">OS_VERSION: 1.4.2_BUILD_ST_88</p>
+            </div>
+            <div class="flex gap-8">
+                <a class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors" href="#">DOCUMENTATION</a>
+                <a class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors" href="#">API_ACCESS</a>
+                <a class="font-label-technical text-label-technical text-primary font-bold" href="#">SUPPORT_PORTAL</a>
+            </div>
+        </footer>
+    </div>
+</main>
+
+<!-- Drawer / Panel Lateral del Guion -->
+<div id="script-drawer" class="fixed right-0 top-0 h-full w-[30rem] bg-surface border-l technical-line-weight border-brand-accent z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+    <!-- Cabecera del Panel -->
+    <div class="p-8 border-b border-outline-variant flex justify-between items-start bg-surface-container-low">
+        <div>
+            <span id="drawer-tag" class="font-label-technical px-2 py-0.5 bg-brand-accent/20 text-on-tertiary-fixed-variant uppercase mb-3 inline-block">FORMATO</span>
+            <h2 id="drawer-title" class="font-headline-lg text-headline-lg font-bold text-primary">Título del Contenido</h2>
+            <p id="drawer-date" class="font-body-md text-on-surface-variant mt-2">Fecha</p>
+        </div>
+        <button onclick="cerrarGuion()" class="text-on-surface-variant hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+    </div>
+    
+    <!-- Cuerpo del Panel (El Guion) -->
+    <div class="p-8 flex-1 overflow-y-auto no-scrollbar bg-surface">
+        <h3 class="font-label-technical text-on-surface-variant uppercase mb-4 tracking-widest">Script / Director's Notes</h3>
+        <textarea id="drawer-content" class="w-full h-full bg-surface-container-highest text-primary font-body-md p-6 border border-outline-variant focus:border-brand-accent resize-none rounded-sm outline-none" readonly>Cargando guion...</textarea>
+    </div>
+</div>
+
+<!-- Floating Technical Info (Peripheral) -->
+<div class="fixed bottom-6 left-72 z-50 pointer-events-none">
+    <div class="bg-primary text-on-primary px-3 py-1 font-label-technical text-[10px] tracking-widest uppercase">
+        KOVA_CS_MONITOR: ACTIVE
+    </div>
+</div>
+
+<!-- Motor JavaScript (Conexión API) -->
+<script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
+    let kovaData = []; 
+
+    // 1. Iniciar la conexión al cargar la página
+    async function initKova() {
+        const grid = document.getElementById('kova-grid');
+        grid.innerHTML = '<p class="font-label-technical text-primary text-xl col-span-full">INICIALIZANDO CONEXIÓN CON KOVA_CONTENT_OS...</p>';
+
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            kovaData = data.CALENDAR || []; // Extrae la pestaña CALENDAR (ajusta si se llama distinto)
+            renderGrid(kovaData);
+        } catch (error) {
+            grid.innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS.</p>';
+            console.error(error);
+        }
+    }
+
+    // 2. Dibujar las tarjetas
+    function renderGrid(data) {
+        const grid = document.getElementById('kova-grid');
+        grid.innerHTML = '';
+
+        data.forEach((item, index) => {
+            // Lógica visual: colores según el estado
+            let bgEstado = '#d1d5db'; 
+            let colorEstado = '#444748';
+            if (item.Estado === 'Ready') { bgEstado = 'rgba(135,220,44,0.3)'; colorEstado = '#2a5000'; }
+            if (item.Estado === 'Publicado' || item.Estado === 'Published') { bgEstado = 'rgba(147,197,253,0.3)'; colorEstado = '#1e3a8a'; }
+
+            // Lógica visual: Icono según tipo de contenido
+            let icon = 'article';
+            const tipo = (item.Tipo_Contenido || '').toLowerCase();
+            if(tipo.includes('reel') || tipo.includes('video')) icon = 'movie';
+            else if(tipo.includes('stor') || tipo.includes('photo')) icon = 'image';
+
+            // Formatear la fecha
+            let fechaTexto = 'TBD';
+            if(item.Fecha) {
+                const f = new Date(item.Fecha);
+                if(!isNaN(f)) fechaTexto = f.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+            }
+
+            // Construir la tarjeta
+            const card = document.createElement('div');
+            card.className = "group bg-[#ede9e1] border-t-2 border-brand-accent p-6 flex flex-col h-full transition-all hover:translate-y-[-4px] cursor-pointer";
+            card.onclick = () => abrirGuion(index); 
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
+                    <span class="font-label-technical px-2 py-0.5 uppercase font-bold" style="background-color: ${bgEstado}; color: ${colorEstado}">${item.Estado || 'Idea'}</span>
+                </div>
+                <h3 class="font-body-lg font-bold text-primary mb-2 group-hover:underline">${item.Contenido || item.Titulo || 'Sin Título'}</h3>
+                <div class="mt-auto pt-6 flex justify-between items-end">
+                    <div>
+                        <p class="font-label-technical text-on-surface-variant uppercase">Programado</p>
+                        <p class="font-body-md text-primary font-bold">${fechaTexto}</p>
+                    </div>
+                    <p class="font-label-technical text-on-surface-variant uppercase">${item.Tipo_Contenido || 'Contenido'}</p>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // 3. Controladores del Panel del Guion
+    function abrirGuion(index) {
+        const item = kovaData[index];
+        
+        document.getElementById('drawer-title').innerText = item.Contenido || item.Titulo || 'Sin Título';
+        document.getElementById('drawer-tag').innerText = item.Tipo_Contenido || 'Contenido';
+        
+        let fechaTexto = '';
+        if(item.Fecha) {
+            const f = new Date(item.Fecha);
+            if(!isNaN(f)) fechaTexto = f.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        document.getElementById('drawer-date').innerText = fechaTexto;
+        
+        // Ajusta 'Guion' si la columna en tu Google Sheet tiene otro nombre (ej. 'Script', 'Texto', 'Notas')
+        const guionTexto = item.Guion || item.Script || item.Texto || "No hay guion o notas registradas en el documento para este contenido.";
+        document.getElementById('drawer-content').value = guionTexto;
+
+        document.getElementById('script-drawer').classList.remove('translate-x-full');
+    }
+
+    function cerrarGuion() {
+        document.getElementById('script-drawer').classList.add('translate-x-full');
+    }
+
+    // Iniciar
+    initKova();
+</script>
+</body>
+</html>
