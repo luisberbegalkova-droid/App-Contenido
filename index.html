@@ -211,7 +211,6 @@
 </div>
 
 <script>
-    // RECOMIENDO: Verifica si esta URL coincide con tu "Última Implementación" de Apps Script
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
     let metricaData = [];
@@ -246,19 +245,11 @@
             const response = await fetch(API_URL);
             const data = await response.json();
             
-            // Unimos los datos protegiendo que existan las pestañas
             const calendarRows = data.CALENDAR || data.Calendar || [];
             const databaseRows = data.DATABASE || data.Database || [];
             kovaData = [...calendarRows, ...databaseRows];
             metricaData = data.METRICA2 || data.Metrica2 || data.METRICA_2 || [];
             
-            // AUDITORÍA INTERNA DE COLUMNAS
-            console.log("=== AUDITORÍA DE DATOS DE LA HOJA ===");
-            console.log("Total filas detectadas:", kovaData.length);
-            if(databaseRows.length > 0) {
-                console.log("Columnas disponibles reales en la pestaña DATABASE:", Object.keys(databaseRows[0]));
-            }
-
             filterData();
             renderAnalytics();
             
@@ -469,7 +460,9 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // FILTRO TOTALMENTE AGRESIVO DE COLUMNAS: Busca cualquier propiedad que contenga 'nota' o 'producc'
+            // BLINDAJE CIEGO POR POSICIÓN:
+            // Intentamos buscar por clave de texto; si no se encuentra o está vacío, 
+            // agarramos directamente el valor número 18 del objeto (Columna R de tu captura)
             let notaProduccion = '';
             const rowKeys = Object.keys(item);
             const keyNota = rowKeys.find(k => {
@@ -481,11 +474,18 @@
                 notaProduccion = item[keyNota].toString().trim();
             }
 
-            // Inyección del texto visual
+            // Si falló la clave, forzamos la lectura de la Columna R (Índice 17 del objeto)
+            if (!notaProduccion && rowKeys.length >= 18) {
+                const valorColumnaR = item[rowKeys[17]]; // Columna 18 (R)
+                if (valorColumnaR && valorColumnaR.toString().trim() !== "0" && valorColumnaR.toString().trim() !== "") {
+                    notaProduccion = valorColumnaR.toString().trim();
+                }
+            }
+
+            // Inyección estética final
             let tipoVisual = tipo;
             if (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video')) {
-                // Si encontramos la nota, la añadimos. Si no, forzamos un log temporal [Sin_Dato] para trackearlo en caliente
-                tipoVisual = notaProduccion ? `${tipo} • [${notaProduccion}]` : `${tipo} • [N/A]`;
+                tipoVisual = notaProduccion ? `${tipo} • [${notaProduccion}]` : `${tipo}`;
             }
 
             let icon = 'article';
