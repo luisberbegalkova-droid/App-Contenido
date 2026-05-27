@@ -211,6 +211,7 @@
 </div>
 
 <script>
+    // RECOMIENDO: Verifica si esta URL coincide con tu "Última Implementación" de Apps Script
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
     let metricaData = [];
@@ -245,12 +246,17 @@
             const response = await fetch(API_URL);
             const data = await response.json();
             
-            kovaData = [...(data.CALENDAR || []), ...(data.DATABASE || [])];
+            // Unimos los datos protegiendo que existan las pestañas
+            const calendarRows = data.CALENDAR || data.Calendar || [];
+            const databaseRows = data.DATABASE || data.Database || [];
+            kovaData = [...calendarRows, ...databaseRows];
             metricaData = data.METRICA2 || data.Metrica2 || data.METRICA_2 || [];
             
-            // LOG DE CONTROL: Imprime el primer objeto completo en la consola para auditar los nombres de las columnas
-            if(kovaData.length > 0) {
-                console.log("Muestra de estructura detectada por el App Script:", kovaData[0]);
+            // AUDITORÍA INTERNA DE COLUMNAS
+            console.log("=== AUDITORÍA DE DATOS DE LA HOJA ===");
+            console.log("Total filas detectadas:", kovaData.length);
+            if(databaseRows.length > 0) {
+                console.log("Columnas disponibles reales en la pestaña DATABASE:", Object.keys(databaseRows[0]));
             }
 
             filterData();
@@ -259,7 +265,8 @@
             document.getElementById('sync-status').innerText = 'SYNC COMPLETE';
             setTimeout(() => document.getElementById('sync-status').classList.add('hidden'), 2000);
         } catch (error) {
-            document.getElementById('kova-grid').innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR.</p>';
+            console.error(error);
+            document.getElementById('kova-grid').innerHTML = '<p class="font-label-technical text-error text-xl col-span-full">SYSTEM ERROR: NO SE PUDO CONECTAR O LEER LA API.</p>';
         }
     }
 
@@ -462,17 +469,23 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // MOTOR DE DETECCIÓN INTELIGENTE DE COLUMNAS (Normalizado para el Apps Script modificado)
+            // FILTRO TOTALMENTE AGRESIVO DE COLUMNAS: Busca cualquier propiedad que contenga 'nota' o 'producc'
             let notaProduccion = '';
             const rowKeys = Object.keys(item);
-            const keyNota = rowKeys.find(k => k.trim().toLowerCase().replace(/_/g, '') === 'notasproduccion');
+            const keyNota = rowKeys.find(k => {
+                const normalized = k.toLowerCase().replace(/_/g, '').trim();
+                return normalized.includes('nota') || normalized.includes('producc');
+            });
+            
             if (keyNota && item[keyNota]) {
                 notaProduccion = item[keyNota].toString().trim();
             }
 
+            // Inyección del texto visual
             let tipoVisual = tipo;
-            if (notaProduccion && (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video'))) {
-                tipoVisual = `${tipo} • [${notaProduccion}]`;
+            if (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video')) {
+                // Si encontramos la nota, la añadimos. Si no, forzamos un log temporal [Sin_Dato] para trackearlo en caliente
+                tipoVisual = notaProduccion ? `${tipo} • [${notaProduccion}]` : `${tipo} • [N/A]`;
             }
 
             let icon = 'article';
