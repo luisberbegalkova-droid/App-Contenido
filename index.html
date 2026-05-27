@@ -460,32 +460,12 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // BLINDAJE CIEGO POR POSICIÓN:
-            // Intentamos buscar por clave de texto; si no se encuentra o está vacío, 
-            // agarramos directamente el valor número 18 del objeto (Columna R de tu captura)
-            let notaProduccion = '';
-            const rowKeys = Object.keys(item);
-            const keyNota = rowKeys.find(k => {
-                const normalized = k.toLowerCase().replace(/_/g, '').trim();
-                return normalized.includes('nota') || normalized.includes('producc');
-            });
-            
-            if (keyNota && item[keyNota]) {
-                notaProduccion = item[keyNota].toString().trim();
-            }
+            // Leemos el dato mapeado rígidamente desde el Apps Script modificado
+            let notaProduccion = item.Notas_produccion || '';
 
-            // Si falló la clave, forzamos la lectura de la Columna R (Índice 17 del objeto)
-            if (!notaProduccion && rowKeys.length >= 18) {
-                const valorColumnaR = item[rowKeys[17]]; // Columna 18 (R)
-                if (valorColumnaR && valorColumnaR.toString().trim() !== "0" && valorColumnaR.toString().trim() !== "") {
-                    notaProduccion = valorColumnaR.toString().trim();
-                }
-            }
-
-            // Inyección estética final
             let tipoVisual = tipo;
-            if (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video')) {
-                tipoVisual = notaProduccion ? `${tipo} • [${notaProduccion}]` : `${tipo}`;
+            if (notaProduccion && (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video'))) {
+                tipoVisual = `${tipo} • [${notaProduccion}]`;
             }
 
             let icon = 'article';
