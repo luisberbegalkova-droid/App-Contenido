@@ -129,8 +129,8 @@
     </div>
 </header>
 
-<main class="w-full lg:ml-64 pt-16 min-h-screen">
-    <div id="view-library" class="px-4 md:px-8 py-12 block">
+<main class="w-full lg:w-[calc(100%-16rem)] lg:ml-64 pt-16 min-h-screen">
+    <div id="view-library" class="px-4 md:pl-8 md:pr-12 lg:pl-10 lg:pr-16 py-12 block">
         <section class="mb-12">
             <h2 class="font-headline-xl text-2xl md:text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
@@ -166,7 +166,7 @@
         <div id="kova-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
     </div>
 
-    <div id="view-analytics" class="px-4 md:px-8 py-12 hidden">
+    <div id="view-analytics" class="px-4 md:pl-8 md:pr-12 lg:pl-10 lg:pr-16 py-12 hidden">
         <section class="mb-12">
             <h2 class="font-headline-xl text-2xl md:text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Analytics Hub</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
@@ -457,8 +457,14 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // LECTURA DE COLUMNA R (Notas_produccion) PARA LA CATEGORÍA DEL REEL
-            const notaProduccion = item.Notas_produccion || item.Notas_Produccion || '';
+            // CORRECCIÓN SISTÉMICA PARA ENCONTRAR LA COLUMNA R SIN IMPORTAR MAYÚSCULAS/MINÚSCULAS
+            let notaProduccion = '';
+            const rowKeys = Object.keys(item);
+            const keyNota = rowKeys.find(k => k.trim().toLowerCase() === 'notas_produccion');
+            if (keyNota && item[keyNota]) {
+                notaProduccion = item[keyNota].toString().trim();
+            }
+
             let tipoVisual = tipo;
             if (notaProduccion && tipo.toLowerCase().includes('reel')) {
                 tipoVisual = `${tipo} • [${notaProduccion}]`;
