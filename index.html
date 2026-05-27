@@ -130,7 +130,6 @@
 </header>
 
 <main class="w-full lg:ml-64 pt-16 min-h-screen">
-    
     <div id="view-library" class="px-4 md:px-8 py-12 block">
         <section class="mb-12">
             <h2 class="font-headline-xl text-2xl md:text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
@@ -217,7 +216,6 @@
     let metricaData = [];
     let currentViewFormat = 'grid'; 
 
-    // Controlador para abrir y cerrar el Sidebar en móviles
     function toggleSidebar(force) {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
@@ -459,6 +457,13 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
+            // LECTURA DE COLUMNA R (Notas_produccion) PARA LA CATEGORÍA DEL REEL
+            const notaProduccion = item.Notas_produccion || item.Notas_Produccion || '';
+            let tipoVisual = tipo;
+            if (notaProduccion && tipo.toLowerCase().includes('reel')) {
+                tipoVisual = `${tipo} • [${notaProduccion}]`;
+            }
+
             let icon = 'article';
             if(tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video')) icon = 'movie';
             else if(tipo.toLowerCase().includes('stor') || tipo.toLowerCase().includes('photo') || tipo.toLowerCase().includes('image')) icon = 'image';
@@ -483,7 +488,7 @@
                             <p class="font-label-technical text-on-surface-variant uppercase text-[10px]">Programado</p>
                             <p class="font-body-md text-primary font-bold text-sm">${fechaTexto}</p>
                         </div>
-                        <p class="font-label-technical text-on-surface-variant uppercase text-[10px] truncate max-w-[100px] text-right">${tipo}</p>
+                        <p class="font-label-technical text-on-surface-variant uppercase text-[10px] truncate max-w-[150px] text-right" title="${tipoVisual}">${tipoVisual}</p>
                     </div>
                 `;
             } else {
@@ -494,12 +499,12 @@
                         <span class="font-label-technical px-2 py-0.5 uppercase font-bold text-xs text-center w-full max-w-[120px]" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
                     </div>
                     <h3 class="font-body-lg font-bold text-primary group-hover:underline flex-1 truncate break-words">${titulo}</h3>
-                    <div class="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-64 border-t sm:border-t-0 pt-2 sm:pt-0 border-outline-variant/30">
+                    <div class="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-80 border-t sm:border-t-0 pt-2 sm:pt-0 border-outline-variant/30">
                         <div class="sm:text-right">
                             <p class="font-label-technical text-on-surface-variant uppercase text-[10px]">Programado</p>
                             <p class="font-body-md text-primary font-bold text-sm">${fechaTexto}</p>
                         </div>
-                        <p class="font-label-technical text-on-surface-variant uppercase text-xs w-24 text-right truncate">${tipo}</p>
+                        <p class="font-label-technical text-on-surface-variant uppercase text-xs w-40 text-right truncate" title="${tipoVisual}">${tipoVisual}</p>
                     </div>
                 `;
             }
