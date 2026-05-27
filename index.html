@@ -90,25 +90,35 @@
 </head>
 <body class="font-body-md text-on-surface">
 
-<aside class="h-full w-64 fixed left-0 top-0 border-r technical-line-weight border-outline-variant bg-surface flex flex-col py-gutter px-6 z-40">
-    <div class="mb-12 mt-6">
-        <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-primary">KOVA OS</h1>
-        <p class="font-label-technical text-label-technical text-on-surface-variant uppercase mt-1">Studio Edition</p>
+<div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="h-full w-64 fixed left-0 top-0 border-r technical-line-weight border-outline-variant bg-surface flex flex-col py-6 px-6 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <div class="mb-12 mt-6 flex justify-between items-center">
+        <div>
+            <h1 class="font-headline-lg text-headline-lg font-semibold tracking-tight text-primary">KOVA OS</h1>
+            <p class="font-label-technical text-label-technical text-on-surface-variant uppercase mt-1">Studio Edition</p>
+        </div>
+        <button onclick="toggleSidebar()" class="lg:hidden text-on-surface-variant hover:text-primary">
+            <span class="material-symbols-outlined">close</span>
+        </button>
     </div>
     <nav class="flex-1 space-y-4">
-        <a id="nav-library" onclick="switchMainView('library')" class="nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200">
+        <a id="nav-library" onclick="switchMainView('library'); toggleSidebar(false);" class="nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200">
             <span class="material-symbols-outlined">calendar_today</span>
             <span class="font-body-md">Content OS</span>
         </a>
-        <a id="nav-analytics" onclick="switchMainView('analytics')" class="nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200">
+        <a id="nav-analytics" onclick="switchMainView('analytics'); toggleSidebar(false);" class="nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200">
             <span class="material-symbols-outlined">monitoring</span>
             <span class="font-body-md">Analytics Hub</span>
         </a>
     </nav>
 </aside>
 
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] border-b technical-line-weight border-outline-variant bg-surface flex justify-between items-center h-16 px-gutter ml-64 z-30">
-    <div class="flex items-center flex-1">
+<header class="fixed top-0 right-0 w-full lg:w-[calc(100%-16rem)] border-b technical-line-weight border-outline-variant bg-surface flex justify-between items-center h-16 px-4 md:px-8 z-30">
+    <div class="flex items-center flex-1 gap-4">
+        <button onclick="toggleSidebar()" class="lg:hidden p-1 text-on-surface-variant hover:text-primary focus:outline-none">
+            <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
         <div class="relative w-full max-w-md" id="search-container">
             <span class="absolute left-0 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">search</span>
             <input id="search-input" oninput="filterData()" class="w-full bg-transparent border-none pl-8 font-body-md text-on-surface focus:ring-0" placeholder="Search resources..." type="text"/>
@@ -119,25 +129,25 @@
     </div>
 </header>
 
-<main class="ml-64 pt-16 min-h-screen">
+<main class="w-full lg:ml-64 pt-16 min-h-screen">
     
-    <div id="view-library" class="px-margin-internal py-12 block">
+    <div id="view-library" class="px-4 md:px-8 py-12 block">
         <section class="mb-12">
-            <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
+            <h2 class="font-headline-xl text-2xl md:text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Library</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
             
-            <div class="flex flex-wrap items-end gap-8 pb-4">
-                <div class="flex flex-col gap-2">
+            <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-6 pb-4">
+                <div class="flex flex-col gap-2 w-full sm:w-auto">
                     <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Type</label>
-                    <select id="type-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                    <select id="type-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer w-full">
                         <option value="All">All Types</option>
                         <option value="Reel">Reel / Video</option>
                         <option value="Stories">Stories / Images</option>
                     </select>
                 </div>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 w-full sm:w-auto">
                     <label class="font-label-technical text-label-technical text-on-surface-variant uppercase">Status</label>
-                    <select id="status-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer">
+                    <select id="status-filter" onchange="filterData()" class="bg-transparent border-b border-outline text-on-surface font-body-md py-1 pr-8 appearance-none cursor-pointer w-full">
                         <option value="Unpublished">No Publicados (Base)</option>
                         <option value="All">Todos los Estados</option>
                         <option value="Idea">Idea</option>
@@ -145,7 +155,7 @@
                         <option value="Published">Published / Publicado</option>
                     </select>
                 </div>
-                <div class="ml-auto flex items-center gap-4">
+                <div class="sm:ml-auto flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-2 sm:pt-0">
                     <span class="font-label-technical text-label-technical text-on-surface-variant uppercase">View Mode</span>
                     <div class="flex border border-outline-variant">
                         <button id="btn-grid" onclick="setView('grid')" class="p-1.5 bg-primary text-on-primary transition-colors"><span class="material-symbols-outlined">grid_view</span></button>
@@ -154,12 +164,12 @@
                 </div>
             </div>
         </section>
-        <div id="kova-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+        <div id="kova-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
     </div>
 
-    <div id="view-analytics" class="px-margin-internal py-12 hidden">
+    <div id="view-analytics" class="px-4 md:px-8 py-12 hidden">
         <section class="mb-12">
-            <h2 class="font-headline-xl text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Analytics Hub</h2>
+            <h2 class="font-headline-xl text-2xl md:text-headline-xl text-primary tracking-[0.1em] uppercase mb-4">Analytics Hub</h2>
             <div class="technical-line asymmetric-divider mb-8"></div>
             <p class="font-label-technical text-on-surface-variant uppercase mb-8">Content Performance & Audience</p>
 
@@ -174,7 +184,7 @@
                 <h3 class="font-headline-lg font-semibold text-primary mb-6 flex items-center gap-2">
                     <span class="material-symbols-outlined">query_stats</span> Content Performance
                 </h3>
-                <div id="platform-kpis" class="grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
+                <div id="platform-kpis" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8"></div>
             </div>
             
             <div id="analytics-error" class="hidden font-label-technical text-error mt-4">
@@ -184,20 +194,20 @@
     </div>
 </main>
 
-<div id="script-drawer" class="fixed right-0 top-0 h-full w-[35rem] bg-surface border-l technical-line-weight border-brand-accent z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
-    <div class="p-8 border-b border-outline-variant flex justify-between items-start bg-surface-container-low">
+<div id="script-drawer" class="fixed right-0 top-0 h-full w-full sm:w-[35rem] bg-surface border-l technical-line-weight border-brand-accent z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+    <div class="p-6 md:p-8 border-b border-outline-variant flex justify-between items-start bg-surface-container-low">
         <div>
             <span id="drawer-tag" class="font-label-technical px-2 py-0.5 bg-brand-accent/20 text-on-tertiary-fixed-variant uppercase mb-3 inline-block">FORMATO</span>
-            <h2 id="drawer-title" class="font-headline-lg text-headline-lg font-bold text-primary">Título del Contenido</h2>
+            <h2 id="drawer-title" class="font-headline-lg text-xl md:text-headline-lg font-bold text-primary">Título del Contenido</h2>
             <p id="drawer-date" class="font-body-md text-on-surface-variant mt-2">Fecha</p>
         </div>
         <button onclick="cerrarGuion()" class="text-on-surface-variant hover:text-primary transition-colors">
             <span class="material-symbols-outlined text-3xl">close</span>
         </button>
     </div>
-    <div class="p-8 flex-1 overflow-y-auto no-scrollbar bg-surface">
+    <div class="p-6 md:p-8 flex-1 overflow-y-auto no-scrollbar bg-surface">
         <h3 class="font-label-technical text-on-surface-variant uppercase mb-4 tracking-widest">Script / Director's Notes</h3>
-        <textarea id="drawer-content" class="w-full h-full min-h-[400px] bg-surface-container-highest text-primary font-body-md p-6 border border-outline-variant focus:border-brand-accent resize-none rounded-sm outline-none" readonly>Cargando guion...</textarea>
+        <textarea id="drawer-content" class="w-full h-full min-h-[350px] bg-surface-container-highest text-primary font-body-md p-4 md:p-6 border border-outline-variant focus:border-brand-accent resize-none rounded-sm outline-none" readonly>Cargando guion...</textarea>
     </div>
 </div>
 
@@ -206,6 +216,21 @@
     let kovaData = []; 
     let metricaData = [];
     let currentViewFormat = 'grid'; 
+
+    // Controlador para abrir y cerrar el Sidebar en móviles
+    function toggleSidebar(force) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const show = force !== undefined ? force : sidebar.classList.contains('-translate-x-full');
+        
+        if (show) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    }
 
     function switchMainView(viewId) {
         document.getElementById('nav-library').className = viewId === 'library' ? 'nav-item nav-active flex items-center gap-3 pl-2 transition-colors duration-200' : 'nav-item nav-inactive flex items-center gap-3 pl-2 hover:text-primary transition-colors duration-200';
@@ -235,28 +260,21 @@
         }
     }
 
-    // -------------------------------------------------------------------------
-    // MOTOR ANALÍTICO - MAPEO EXACTO PARA KOVA
-    // -------------------------------------------------------------------------
-    
-    // Función para decidir si una columna es de Instagram, TikTok, etc, y si hay que sumarla o hacer media.
     function getPlatformAndType(key) {
         const k = key.trim().toLowerCase();
         if (!k) return null;
 
         let pName = null;
-        let type = 'sum'; // Por defecto sumamos los valores (Ej: Alcance, Compartidos)
+        let type = 'sum';
 
-        // Si la columna habla de retención, porcentaje o vistas cortas, hacemos la media matemática.
         if (k.includes('%') || k.includes('media') || k.includes('porcentaje') || k.includes('viendo') || k.includes('watched') || k.includes('visualizacion 15s')) {
             type = 'avg';
         }
 
-        // Mapeo exacto por tus columnas
         if (k.includes('insta') || k.includes('guardados') || k.includes('no seguidores')) {
             pName = 'Instagram';
         } else if (k.includes('tiktok') || k.includes('watched full') || k === 'compartidos' || k.includes('seguidores+')) {
-            pName = 'TikTok'; // Ojo: "Compartidos" a secas es la M de TikTok.
+            pName = 'TikTok';
         } else if (k.includes('face') || k.includes('fb')) {
             pName = 'Facebook';
         } else if (k.includes('se quedaron viendo') || k.includes('porcentaje medio visto')) {
@@ -266,6 +284,10 @@
         if(pName) return { name: pName, type: type };
         return null;
     }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') cerrarGuion();
+    });
 
     function isPercentageMetric(key) {
         const k = key.toLowerCase();
@@ -289,23 +311,19 @@
         let followersData = [];
 
         metricaData.forEach(row => {
-            // 1. Extraer tabla de Seguidores (Tus Columnas V y W)
             if (row['Plataforma'] && row['Seguidores']) {
                 const platFormName = String(row['Plataforma']).trim();
                 const count = parseFloat(row['Seguidores']);
                 if (platFormName && !isNaN(count)) {
-                    // Evitar duplicar si se lee más de una vez
                     if(!followersData.find(f => f.name.toLowerCase() === platFormName.toLowerCase())) {
                         followersData.push({ name: platFormName, count: count });
                     }
                 }
             }
 
-            // 2. EXCLUIR LA FILA DE PROMEDIOS (Para no duplicar sumas y fastidiar las medias)
             const isPromedioRow = (row['Sprint_ID'] === 'Promedios' || row['Titulo / Gancho'] === 'Promedios');
             if (isPromedioRow) return;
 
-            // 3. Procesar resto de métricas de contenido
             for (let key in row) {
                 const info = getPlatformAndType(key);
                 if (info) {
@@ -314,8 +332,6 @@
 
                     if (!isNaN(valNum) && valStr.trim() !== "") {
                         const isPercent = isPercentageMetric(key);
-                        
-                        // Si Google Sheets nos manda un decimal para un porcentaje (ej. 0.75 en vez de 75%), lo pasamos a 100 base
                         if (isPercent && valNum <= 5 && !valStr.includes('%')) {
                             valNum = valNum * 100;
                         }
@@ -332,7 +348,6 @@
             }
         });
 
-        // Formateador visual de números al estilo europeo (20.7K -> 20,7K)
         const formatNum = (num, isAvg) => {
             if(num >= 1000000) return (num / 1000000).toFixed(1).replace('.', ',') + 'M';
             if(num >= 1000) return (num / 1000).toFixed(1).replace('.', ',') + 'K';
@@ -340,34 +355,31 @@
             return num.toLocaleString('es-ES');
         };
 
-        // Pintar tarjetas de Audiencia
         if(followersData.length > 0) {
             followersData.forEach(data => {
                 audienceContainer.innerHTML += `
                     <div class="bg-[#ede9e1] border-l-4 border-primary p-4 rounded-sm flex flex-col justify-center">
-                        <span class="font-label-technical text-on-surface-variant uppercase mb-1">${data.name}</span>
-                        <span class="font-headline-lg font-bold text-primary">${formatNum(data.count, false)}</span>
+                        <span class="font-label-technical text-on-surface-variant uppercase text-xs mb-1">${data.name}</span>
+                        <span class="text-xl md:text-headline-lg font-bold text-primary">${formatNum(data.count, false)}</span>
                     </div>
                 `;
             });
         }
 
-        // Pintar tarjetas de Contenido por Plataforma
         for (let pName in platforms) {
             const plat = platforms[pName];
             if (Object.keys(plat.metrics).length > 0) {
                 let html = `
-                    <div class="bg-[#ede9e1] border border-outline-variant p-6 rounded-sm hover:border-brand-accent transition-colors">
+                    <div class="bg-[#ede9e1] border border-outline-variant p-4 md:p-6 rounded-sm hover:border-brand-accent transition-colors">
                         <div class="flex items-center gap-3 mb-6 pb-4 border-b border-outline-variant">
                             <span class="material-symbols-outlined text-3xl text-primary">${plat.icon}</span>
-                            <h4 class="font-headline-lg font-bold text-primary uppercase tracking-tight">${pName}</h4>
+                            <h4 class="text-lg md:text-headline-lg font-bold text-primary uppercase tracking-tight">${pName}</h4>
                         </div>
-                        <div class="grid grid-cols-2 gap-6">
+                        <div class="grid grid-cols-2 gap-4 md:gap-6">
                 `;
 
                 for (let mName in plat.metrics) {
                     const m = plat.metrics[mName];
-                    // Limpieza visual: quitamos 'Insta', 'Facebook' de los títulos de cada métrica para que quede limpio
                     let displayMName = mName.replace(/IG|Insta|TK|Tik|Tok|FB|Face|Facebook|YT|Shorts/gi, '').trim();
                     if (displayMName === "" || displayMName === "% No") displayMName = mName; 
 
@@ -378,7 +390,7 @@
                     html += `
                         <div class="flex flex-col">
                             <span class="font-label-technical text-on-surface-variant uppercase text-[10px] mb-1 truncate" title="${mName}">${displayMName}</span>
-                            <span class="font-body-lg font-bold text-primary">${formatted}</span>
+                            <span class="text-base md:text-body-lg font-bold text-primary">${formatted}</span>
                         </div>
                     `;
                 }
@@ -388,9 +400,6 @@
         }
     }
 
-    // -------------------------------------------------------------------------
-    // MOTOR DE CALENDARIO (Lógica de Guiones intacta)
-    // -------------------------------------------------------------------------
     function setView(view) {
         currentViewFormat = view;
         document.getElementById('btn-grid').className = view === 'grid' ? 'p-1.5 bg-primary text-on-primary transition-colors' : 'p-1.5 hover:bg-surface-container-low text-on-surface-variant transition-colors';
@@ -432,8 +441,11 @@
     function renderGrid(data) {
         const grid = document.getElementById('kova-grid');
         grid.innerHTML = '';
-        if (currentViewFormat === 'grid') grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8";
-        else grid.className = "flex flex-col gap-3"; 
+        if (currentViewFormat === 'grid') {
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8";
+        } else {
+            grid.className = "flex flex-col gap-3"; 
+        }
 
         if (data.length === 0) return;
 
@@ -463,31 +475,31 @@
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-6">
                         <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
-                        <span class="font-label-technical px-2 py-0.5 uppercase font-bold" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
+                        <span class="font-label-technical px-2 py-0.5 uppercase font-bold text-xs" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
                     </div>
-                    <h3 class="font-body-lg font-bold text-primary mb-2 group-hover:underline">${titulo}</h3>
-                    <div class="mt-auto pt-6 flex justify-between items-end">
+                    <h3 class="font-body-lg font-bold text-primary mb-2 group-hover:underline break-words">${titulo}</h3>
+                    <div class="mt-auto pt-6 flex justify-between items-end gap-2">
                         <div>
-                            <p class="font-label-technical text-on-surface-variant uppercase">Programado</p>
-                            <p class="font-body-md text-primary font-bold">${fechaTexto}</p>
-                        </div>
-                        <p class="font-label-technical text-on-surface-variant uppercase text-xs">${tipo}</p>
-                    </div>
-                `;
-            } else {
-                card.className = "group bg-[#ede9e1] border-l-4 border-brand-accent p-4 flex flex-row items-center justify-between w-full transition-all hover:translate-x-1 cursor-pointer gap-6";
-                card.innerHTML = `
-                    <div class="flex items-center gap-4 w-48">
-                        <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
-                        <span class="font-label-technical px-2 py-0.5 uppercase font-bold text-center w-full" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
-                    </div>
-                    <h3 class="font-body-lg font-bold text-primary group-hover:underline flex-1 truncate">${titulo}</h3>
-                    <div class="flex items-center gap-8 w-64 justify-end">
-                        <div class="text-right">
                             <p class="font-label-technical text-on-surface-variant uppercase text-[10px]">Programado</p>
                             <p class="font-body-md text-primary font-bold text-sm">${fechaTexto}</p>
                         </div>
-                        <p class="font-label-technical text-on-surface-variant uppercase text-xs w-24 text-right">${tipo}</p>
+                        <p class="font-label-technical text-on-surface-variant uppercase text-[10px] truncate max-w-[100px] text-right">${tipo}</p>
+                    </div>
+                `;
+            } else {
+                card.className = "group bg-[#ede9e1] border-l-4 border-brand-accent p-4 flex flex-col sm:flex-row sm:items-center justify-between w-full transition-all hover:translate-x-1 cursor-pointer gap-4 sm:gap-6";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4 w-full sm:w-48">
+                        <span class="material-symbols-outlined text-primary text-2xl">${icon}</span>
+                        <span class="font-label-technical px-2 py-0.5 uppercase font-bold text-xs text-center w-full max-w-[120px]" style="background-color: ${bgEstado}; color: ${colorEstado}">${estadoActual}</span>
+                    </div>
+                    <h3 class="font-body-lg font-bold text-primary group-hover:underline flex-1 truncate break-words">${titulo}</h3>
+                    <div class="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-64 border-t sm:border-t-0 pt-2 sm:pt-0 border-outline-variant/30">
+                        <div class="sm:text-right">
+                            <p class="font-label-technical text-on-surface-variant uppercase text-[10px]">Programado</p>
+                            <p class="font-body-md text-primary font-bold text-sm">${fechaTexto}</p>
+                        </div>
+                        <p class="font-label-technical text-on-surface-variant uppercase text-xs w-24 text-right truncate">${tipo}</p>
                     </div>
                 `;
             }
