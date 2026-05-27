@@ -248,6 +248,11 @@
             kovaData = [...(data.CALENDAR || []), ...(data.DATABASE || [])];
             metricaData = data.METRICA2 || data.Metrica2 || data.METRICA_2 || [];
             
+            // LOG DE CONTROL: Imprime el primer objeto completo en la consola para auditar los nombres de las columnas
+            if(kovaData.length > 0) {
+                console.log("Muestra de estructura detectada por el App Script:", kovaData[0]);
+            }
+
             filterData();
             renderAnalytics();
             
@@ -457,16 +462,16 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // CORRECCIÓN SISTÉMICA PARA ENCONTRAR LA COLUMNA R SIN IMPORTAR MAYÚSCULAS/MINÚSCULAS
+            // MOTOR DE DETECCIÓN INTELIGENTE DE COLUMNAS (Normalizado para el Apps Script modificado)
             let notaProduccion = '';
             const rowKeys = Object.keys(item);
-            const keyNota = rowKeys.find(k => k.trim().toLowerCase() === 'notas_produccion');
+            const keyNota = rowKeys.find(k => k.trim().toLowerCase().replace(/_/g, '') === 'notasproduccion');
             if (keyNota && item[keyNota]) {
                 notaProduccion = item[keyNota].toString().trim();
             }
 
             let tipoVisual = tipo;
-            if (notaProduccion && tipo.toLowerCase().includes('reel')) {
+            if (notaProduccion && (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video'))) {
                 tipoVisual = `${tipo} • [${notaProduccion}]`;
             }
 
