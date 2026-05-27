@@ -213,6 +213,7 @@
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbxgE_oZnh-ac8mqma0kDWPiPNplm0SvdsNpBnaY3XmyE4m88h3Q9mGu3WDfAt_6K1-yig/exec';
     let kovaData = []; 
+    let rawDatabaseTab = []; // Guardará de forma aislada la pestaña DATABASE para cruces rápidos
     let metricaData = [];
     let currentViewFormat = 'grid'; 
 
@@ -246,8 +247,9 @@
             const data = await response.json();
             
             const calendarRows = data.CALENDAR || data.Calendar || [];
-            const databaseRows = data.DATABASE || data.Database || [];
-            kovaData = [...calendarRows, ...databaseRows];
+            rawDatabaseTab = data.DATABASE || data.Database || [];
+            
+            kovaData = [...calendarRows, ...rawDatabaseTab];
             metricaData = data.METRICA2 || data.Metrica2 || data.METRICA_2 || [];
             
             filterData();
@@ -460,9 +462,23 @@
             const titulo = item.Concepto || item.Contenido || item.Titulo || 'Sin Título';
             const fechaRaw = item.Fecha_generacion || item.Fecha;
             
-            // Leemos el dato mapeado rígidamente desde el Apps Script modificado
+            // MOTOR DE BÚSQUEDA CRUZADA INTEGRADA PARA EVITAR CACHÉ DE CALENDAR:
+            // Si el objeto actual no tiene la nota asignada directamente (porque procede de la pestaña CALENDAR),
+            // escaneamos en caliente la pestaña DATABASE buscando el mismo título exacto para extraer la nota de producción.
             let notaProduccion = item.Notas_produccion || '';
+            
+            if (!notaProduccion && rawDatabaseTab.length > 0) {
+                const tituloLimpio = titulo.trim().toLowerCase();
+                const dbMatch = rawDatabaseTab.find(dbItem => {
+                    const dbTitulo = (dbItem.Concepto || dbItem.Contenido || dbItem.Titulo || '').toString().trim().toLowerCase();
+                    return dbTitulo === tituloLimpio;
+                });
+                if (dbMatch && dbMatch.Notas_produccion) {
+                    notaProduccion = dbMatch.Notas_produccion.toString().trim();
+                }
+            }
 
+            // Construcción del texto del tipo de contenido
             let tipoVisual = tipo;
             if (notaProduccion && (tipo.toLowerCase().includes('reel') || tipo.toLowerCase().includes('video'))) {
                 tipoVisual = `${tipo} • [${notaProduccion}]`;
